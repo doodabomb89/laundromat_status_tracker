@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3ed">
+  <meta name="description" content="XXX laundromat — live washer and dryer availability.">
+
+  <title>XXX laundromat</title>
+
+  <!-- Friendly, highly legible type: rounded display face + practical sans-serif body. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f5f3ed;
+      --surface: #fffefa;
+      --surface-2: #f0eee7;
+      --ink: #17231f;
+      --muted: #68736f;
+      --line: #dfded7;
+      --green: #16845f;
+      --green-soft: #e3f5ed;
+      --green-ring: #bce8d8;
+      --orange: #e9821f;
+      --orange-deep: #c85d0d;
+      --orange-soft: #fff2e0;
+      --orange-ring: #f2954f;
+      --orange-glow: rgba(233, 130, 31, .2);
+      --shadow: 0 8px 26px rgba(27, 37, 33, .07), 0 2px 5px rgba(27, 37, 33, .04);
+      --shadow-hover: 0 14px 34px rgba(27, 37, 33, .11), 0 3px 7px rgba(27, 37, 33, .05);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(255,255,255,.8), transparent 28rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 28px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      margin-bottom: 34px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.25;
+      font-weight: 600;
+      letter-spacing: .01em;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Nunito", sans-serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      line-height: .98;
+      letter-spacing: -.045em;
+      font-weight: 900;
+    }
+
+    .brand-mark {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--ink);
+      color: #fff;
+      font-family: "Nunito", sans-serif;
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: -.05em;
+      box-shadow: 0 6px 15px rgba(23,35,31,.12);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 620px;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 40px;
+      color: var(--ink);
+      font-size: 1.12rem;
+      font-weight: 800;
+    }
+
+    .stat-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px var(--green-soft);
+    }
+
+    .section {
+      margin-top: 32px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-family: "Nunito", sans-serif;
+      font-size: 1.35rem;
+      line-height: 1;
+      letter-spacing: -.025em;
+      font-weight: 900;
+    }
+
+    .section-count {
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    .machine-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .machine-card {
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      padding: 14px 12px 16px;
+      background: rgba(255,254,250,.94);
+      border: 1px solid rgba(223,222,215,.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .machine-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .machine-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(255,255,255,.62), transparent 42%);
+    }
+
+    .card-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 7px;
+      min-height: 28px;
+      margin-bottom: 7px;
+    }
+
+    .capacity {
+      min-width: 0;
+      font-family: "Nunito", sans-serif;
+      font-size: 1.03rem;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+
+    .capacity.placeholder {
+      visibility: hidden;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: .7rem;
+      line-height: 1;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status-pill.free {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .status-pill.busy {
+      color: #b85a08;
+      background: var(--orange-soft);
+    }
+
+    .status-icon {
+      position: relative;
+      width: 11px;
+      height: 11px;
+      flex: 0 0 11px;
+    }
+
+    .status-icon.free::before {
+      content: "";
+      position: absolute;
+      width: 7px;
+      height: 4px;
+      left: 2px;
+      top: 2px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(-45deg);
+    }
+
+    .status-icon.busy {
+      border: 1.8px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+    }
+
+    .status-icon.busy::after {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      right: -1px;
+      top: -1px;
+      border-top: 1.8px solid currentColor;
+      border-right: 1.8px solid currentColor;
+      transform: rotate(5deg);
+    }
+
+    .porthole-wrap {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      width: min(100%, 164px);
+      aspect-ratio: 1;
+      margin: 4px auto 1px;
+      perspective: 600px;
+    }
+
+    /* Drum: sits behind the door, revealed once the door swings open.
+       Always in the DOM so there's no pop-in, just hidden by the closed
+       door in front of it. Grey regardless of free/busy, since the machine
+       interior itself isn't a status signal, only what's inside it is. */
+    .drum {
+      position: absolute;
+      inset: 4%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 30%, #d8d8d3, #b8b8b2 55%, #9a9a94 100%);
+      box-shadow:
+        inset 0 0 0 10px rgba(0,0,0,.06),
+        inset 0 6px 18px rgba(0,0,0,.18);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    /* Door: the existing .porthole element, now hinged on its left edge
+       via transform-origin, so opening it reads as a real front-loader
+       door swinging outward rather than a flat fade or scale. z-index
+       keeps it stacked above the .drum behind it while closed. Kept on
+       GPU-friendly transform only, no width/height animation, so it
+       stays smooth even on older phones. */
+    .porthole {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 91%;
+      height: 91%;
+      border-radius: 50%;
+      border: 2px solid var(--green-ring);
+      background:
+        radial-gradient(circle at 34% 27%, rgba(255,255,255,.98), rgba(246,251,248,.98) 38%, rgba(231,243,238,.98) 100%);
+      box-shadow:
+        inset 0 0 0 8px rgba(255,255,255,.55),
+        inset 0 0 24px rgba(29, 92, 72, .07),
+        0 4px 9px rgba(23,35,31,.08);
+      transform-style: preserve-3d;
+      transform-origin: right center;
+      transition: transform .5s cubic-bezier(.34, 1.1, .64, 1);
+      backface-visibility: hidden;
+    }
+
+    /* Only free machines' doors are interactive. Busy machines keep the
+       default cursor and no hover affordance, since you can't (and
+       shouldn't try to) open a running washing machine door. */
+    .porthole-wrap.openable .porthole {
+      cursor: pointer;
+    }
+
+    .porthole-wrap.open .porthole {
+      transform: rotateY(76deg);
+    }
+
+    .porthole::before {
+      content: "";
+      position: absolute;
+      width: 44%;
+      height: 15%;
+      left: 15%;
+      top: 15%;
+      border-radius: 50%;
+      background: rgba(255,255,255,.48);
+      transform: rotate(-26deg);
+      filter: blur(1px);
+    }
+
+    .porthole.busy {
+      border-color: var(--orange-ring);
+      background:
+        radial-gradient(circle at 34% 27%, #ffc98a, #ffab5e 47%, #f2884a 100%);
+      box-shadow:
+        inset 0 0 0 8px rgba(255,255,255,.14),
+        inset 0 0 28px rgba(150, 78, 20, .12),
+        0 5px 13px var(--orange-glow);
+    }
+
+    .porthole.busy::before {
+      background: rgba(255,244,225,.28);
+    }
+
+    .latch {
+      position: absolute;
+      left: 14%;
+      top: 50%;
+      z-index: 2;
+      width: 14px;
+      height: 32px;
+      transform: translateY(-50%);
+      border-radius: 3px;
+      background: #17231f;
+      box-shadow: 1px 2px 3px rgba(0,0,0,.14);
+      transition: opacity .25s ease;
+    }
+
+    /* Fade the latch out early in the swing (well before 90deg, where it
+       would otherwise be seen edge-on or glimpsed through the open gap),
+       so opening the door reads as clean rather than showing a handle
+       floating in space mid-rotation. */
+    .porthole-wrap.open .latch {
+      opacity: 0;
+      transition-delay: 0s;
+    }
+
+    .since {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      margin-left: 14%;
+      color: var(--ink);
+    }
+
+    .since-label {
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .01em;
+      text-transform: lowercase;
+    }
+
+    .since-time {
+      font-family: "Nunito", sans-serif;
+      font-size: 1.08rem;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+
+    .free-mark {
+      position: relative;
+      z-index: 2;
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(22,132,95,.2);
+      border-radius: 50%;
+      opacity: .65;
+    }
+
+    .free-mark::before {
+      content: "";
+      position: absolute;
+      width: 11px;
+      height: 6px;
+      left: 7px;
+      top: 8px;
+      border-left: 3px solid var(--green);
+      border-bottom: 3px solid var(--green);
+      transform: rotate(-45deg);
+    }
+
+    footer {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 42px;
+      padding: 18px 0 4px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .75rem;
+      line-height: 1.5;
+    }
+
+    footer p { margin: 0; }
+
+    .auto-update {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    footer a {
+      color: var(--ink);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    @media (min-width: 560px) {
+      .page {
+        width: min(680px, calc(100% - 48px));
+        padding-top: 46px;
+      }
+
+      .machine-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .machine-card {
+        padding: 14px 12px 17px;
+      }
+
+      .porthole-wrap {
+        width: min(100%, 174px);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .page {
+        width: min(1120px, calc(100% - 72px));
+        padding-top: 56px;
+      }
+
+      header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        column-gap: 60px;
+        margin-bottom: 44px;
+      }
+
+      .stats {
+        width: 430px;
+        justify-self: end;
+      }
+
+      .section {
+        margin-top: 38px;
+      }
+
+      .section-heading {
+        margin-bottom: 18px;
+      }
+
+      .stat {
+        font-size: 1.18rem;
+      }
+
+      .machine-grid {
+        gap: 18px;
+      }
+
+      .machine-card {
+        padding: 16px 15px 19px;
+      }
+
+      .porthole-wrap {
+        width: min(100%, 185px);
+        margin-top: 8px;
+      }
+
+      footer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 52px;
+      }
+    }
+
+    @media (min-width: 1180px) {
+      .machine-grid {
+        gap: 20px;
+      }
+
+      .machine-card {
+        padding-left: 17px;
+        padding-right: 17px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .machine-card { transition: none; }
+      .porthole { transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header>
+      <div class="brand-row">
+        <div>
+          <p class="eyebrow">Blk 93, Toa Payoh Lorong 4, Singapore</p>
+          <h1>XXX laundromat</h1>
+        </div>
+      </div>
+
+      <div class="stats" aria-label="Live machine availability">
+        <div class="stat">
+          <span class="stat-dot" aria-hidden="true"></span>
+          <span id="washer-stat">Washers: 4/6 free</span>
+        </div>
+        <div class="stat">
+          <span class="stat-dot" aria-hidden="true"></span>
+          <span id="dryer-stat">Dryers: 3/6 free</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="section" aria-labelledby="washers-title">
+      <div class="section-heading">
+        <h2 id="washers-title">Washers</h2>
+        <span class="section-count" id="washer-count">6 machines</span>
+      </div>
+
+      <div class="machine-grid" id="washer-grid"></div>
+    </section>
+
+    <section class="section" aria-labelledby="dryers-title">
+      <div class="section-heading">
+        <h2 id="dryers-title">Dryers</h2>
+        <span class="section-count" id="dryer-count">6 machines</span>
+      </div>
+
+      <div class="machine-grid" id="dryer-grid"></div>
+    </section>
+
+    <footer>
+      <p class="auto-update"><span class="live"><span class="live-dot" aria-hidden="true"></span>Auto-updates live</span> <span>no need to refresh.</span></p>
+      <p>Reading looks wrong? Call the shop: <a href="tel:+6561234567">6123 4567</a></p>
+    </footer>
+  </main>
+
+  <script>
+    // Dummy data standing in for rows from public_machine_status.
+    // Washers are differentiated by load capacity, since that's what a
+    // customer actually decides on (a duvet needs 20kg, a small load
+    // doesn't). Dryers are identical units, so capacity is left blank,
+    // which the card template treats as "no label, just status".
+    // since is only meaningful when status is 'busy', in 24-hour time.
+    const washers = [
+      { capacity: '20kg', status: 'free', since: '' },
+      { capacity: '16kg', status: 'busy', since: '14:10' },
+      { capacity: '16kg', status: 'free', since: '' },
+      { capacity: '12kg', status: 'free', since: '' },
+      { capacity: '10kg', status: 'free', since: '' },
+      { capacity: '10kg', status: 'busy', since: '14:48' }
+    ];
+
+    const dryers = [
+      { capacity: '', status: 'busy', since: '14:35' },
+      { capacity: '', status: 'free', since: '' },
+      { capacity: '', status: 'busy', since: '14:48' },
+      { capacity: '', status: 'free', since: '' },
+      { capacity: '', status: 'busy', since: '13:30' },
+      { capacity: '', status: 'free', since: '' }
+    ];
+
+    // Builds one machine card's markup. Kept as a template literal rather
+    // than a framework component since this file has to stay a single
+    // standalone HTML file, but the shape (one function, fed by a plain
+    // data array) maps directly onto a Svelte {#each} block later, so
+    // porting this into the real SvelteKit page is a structural copy,
+    // not a redesign.
+    function machineCard(machine) {
+      const isBusy = machine.status === 'busy';
+      const hasCapacity = machine.capacity !== '';
+
+      const capacitySpan = hasCapacity
+        ? `<span class="capacity">${machine.capacity}</span>`
+        : `<span class="capacity placeholder">Dryer</span>`;
+
+      const statusPill = isBusy
+        ? `<span class="status-pill busy"><span class="status-icon busy" aria-hidden="true"></span>In use</span>`
+        : `<span class="status-pill free"><span class="status-icon free" aria-hidden="true"></span>Free</span>`;
+
+      const portholeInner = isBusy
+        ? `<span class="since"><span class="since-label">since</span><span class="since-time">${machine.since}</span></span>`
+        : `<span class="free-mark"></span>`;
+
+      // aria-label gives screen readers the same info sighted users get
+      // from the card at a glance: what it is, and its current state.
+      const ariaLabel = hasCapacity
+        ? `${machine.capacity} washer, ${isBusy ? `in use since ${machine.since}` : 'free'}`
+        : `Dryer, ${isBusy ? `in use since ${machine.since}` : 'free'}`;
+
+      // Only free machines can have their door opened. A running machine
+      // door shouldn't be interactive at all, so busy cards render a
+      // plain, non-focusable, non-clickable wrap: no role, no tabindex,
+      // no cursor affordance, so the CSS :hover/cursor states genuinely
+      // don't apply rather than just being visually suppressed.
+      const wrapAttrs = isBusy
+        ? ''
+        : `role="button" tabindex="0" aria-label="Open door to peek inside"`;
+
+      return `
+        <article class="machine-card" aria-label="${ariaLabel}">
+          <div class="card-top">
+            ${capacitySpan}
+            ${statusPill}
+          </div>
+          <div class="porthole-wrap${isBusy ? '' : ' openable'}" ${wrapAttrs}>
+            <div class="drum"></div>
+            <div class="porthole${isBusy ? ' busy' : ''}" aria-hidden="true">
+              <span class="latch"></span>
+              ${portholeInner}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderGrid(elementId, machines) {
+      document.getElementById(elementId).innerHTML = machines.map(machineCard).join('');
+    }
+
+    renderGrid('washer-grid', washers);
+    renderGrid('dryer-grid', dryers);
+
+    // Free counts and the two header stat lines are computed from the
+    // same data arrays that built the cards, so the summary can never
+    // drift out of sync with what's actually shown below it.
+    const washerFree = washers.filter(m => m.status === 'free').length;
+    const dryerFree = dryers.filter(m => m.status === 'free').length;
+
+    document.getElementById('washer-stat').textContent = `Washers: ${washerFree}/${washers.length} free`;
+    document.getElementById('dryer-stat').textContent = `Dryers: ${dryerFree}/${dryers.length} free`;
+    document.getElementById('washer-count').textContent = `${washers.length} machines`;
+    document.getElementById('dryer-count').textContent = `${dryers.length} machines`;
+
+    // Door click/keyboard toggle: delegated to .page so it works for
+    // cards rendered after this listener attaches, and so we don't wire
+    // up 12 separate listeners. Only wraps carrying .openable (i.e. free
+    // machines) respond; a click landing on a busy machine's door is a
+    // no-op, matching the real-world rule that you don't open a running
+    // washing machine door.
+    document.querySelector('.page').addEventListener('click', (e) => {
+      const wrap = e.target.closest('.porthole-wrap.openable');
+      if (!wrap) return;
+      wrap.classList.toggle('open');
+    });
+
+    document.querySelector('.page').addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const wrap = e.target.closest('.porthole-wrap.openable');
+      if (!wrap) return;
+      e.preventDefault();
+      wrap.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
