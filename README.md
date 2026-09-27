@@ -34,9 +34,6 @@ I then switched to using smart plugs instead, which turned out to be a far more 
 
 Each washing machine or dryer is connected through a smart plug. The plug reports live power draw, which is used to determine whether the machine is currently running or idle. This status is written to a Supabase database, which the frontend dashboard reads from to show customers, in real time, which machines are free.
 
-## Screenshots / Demo
-
-Add photos of the physical smart plug setup and a screenshot of the dashboard here.
 
 ## What I Learned
 
