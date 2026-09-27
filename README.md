@@ -1,6 +1,6 @@
 # Laundromat Status SG
 
-A real time washing machine and dryer availability checker for laundromats, letting customers check whether a machine is free before visiting. Built under my startup VeenaTech.
+A real time washing machine and dryer availability checker for laundromats, letting customers check whether a machine is free before visiting. 
 
 ## The Problem
 
